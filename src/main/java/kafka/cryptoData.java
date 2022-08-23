@@ -23,6 +23,9 @@ public class cryptoData {
     public double ETH_USD_Close;
 
     @CsvBindByName
+    public double ETH_USD_volume;
+
+    @CsvBindByName
     public double BTC_USD_Open;
 
     @CsvBindByName
@@ -33,4 +36,7 @@ public class cryptoData {
 
     @CsvBindByName
     public double BTC_USD_Close;
+
+    @CsvBindByName
+    public double BTC_USD_volume;
 }

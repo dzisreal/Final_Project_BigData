@@ -13,8 +13,9 @@ public class SparkSS {
         SparkSession spark = SparkSession
                 .builder()
                 .appName("Spark SS_Kafka")
-                .master("local")
+//                .master("local")
                 .config("spark.dynamicAllocation.enabled","false")
+                .config("spark.scheduler.mode", "FAIR")
                 .getOrCreate();
 
         spark.sparkContext().setLogLevel("ERROR");
@@ -26,9 +27,9 @@ public class SparkSS {
         Dataset<Row> df = spark
                 .readStream()
                 .format("kafka")
-                .option("kafka.bootstrap.servers", "localhost:9092")
-                .option("subscribe", "cryptoData_hoand68")
-//                .option("group.id","group2")
+                .option("kafka.bootstrap.servers", "172.17.80.28:9092")
+                .option("subscribe", "hoand68_data")
+                .option("group.id","group2")
                 .option("startingOffsets","earliest")
                 .option("auto.offset.reset","true")
                 .option("failOnDataLoss", "false")
@@ -40,11 +41,14 @@ public class SparkSS {
                                           "split(value,',')[3] as ETH_USD_High",
                                           "split(value,',')[4] as ETH_USD_Low",
                                           "split(value,',')[5] as ETH_USD_Close",
-                                          "split(value,',')[6] as CloseTime",
-                                          "split(value,',')[7] as BTC_USD_Open",
-                                          "split(value,',')[8] as BTC_USD_High",
-                                          "split(value,',')[9] as BTC_USD_Low",
-                                          "split(value,',')[10] as BTC_USD_Close"
+                                          "split(value,',')[6] as ETH_USD_volume",
+                                          "split(value,',')[7] as CloseTime",
+                                          "split(value,',')[8] as BTC_USD_Open",
+                                          "split(value,',')[9] as BTC_USD_High",
+                                          "split(value,',')[10] as BTC_USD_Low",
+                                          "split(value,',')[11] as BTC_USD_Close",
+                                        "split(value,',')[12] as BTC_USD_volume"
+
                                             );
 
         df2.printSchema();
@@ -53,8 +57,8 @@ public class SparkSS {
                 .writeStream()
                 .format("parquet")
                 .outputMode("append")
-                .option("checkpointLocation", "C:\\Users\\DanhHoa\\Documents\\Final_Project_BigData\\output\\checkpoint")
-                .option("path", "C:\\Users\\DanhHoa\\Documents\\Final_Project_BigData\\output\\output")
+                .option("checkpointLocation", "/user/hoand68/final_project/checkpoint")
+                .option("path", "/user/hoand68/final_project/output")
                 .start();
         query.awaitTermination();
     }

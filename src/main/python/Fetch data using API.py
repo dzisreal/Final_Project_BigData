@@ -38,12 +38,12 @@ today = datetime.today().strftime('%Y-%m-%d')
 yesterday = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
 for coin in coins:
     print(f'gathering {coin}...')
-    start_str = yesterday
+    start_str = "2020-01-01"
     end_str = today
      
     
     klines = client.get_historical_klines(symbol=f'{coin}USDT', 
-                                          interval=client.KLINE_INTERVAL_1MINUTE, 
+                                          interval=client.KLINE_INTERVAL_1HOUR,
                                           start_str=start_str,
                                           end_str=end_str)
     cols = ['OpenTime',
@@ -51,7 +51,7 @@ for coin in coins:
             f'{coin}_USD_High',
             f'{coin}_USD_Low',
             f'{coin}_USD_Close',
-            f'{coin}-USD_volume',
+            f'{coin}_USD_volume',
             'CloseTime',
             f'{coin}-QuoteAssetVolume',
             f'{coin}-NumberOfTrades',
@@ -60,7 +60,7 @@ for coin in coins:
             f'{coin}-ignore']
 
     coin_df = pd.DataFrame(klines,columns=cols)
-    coin_df = coin_df[['OpenTime',f"{coin}_USD_Open",f'{coin}_USD_High',f'{coin}_USD_Low',f"{coin}_USD_Close",'CloseTime']]
+    coin_df = coin_df[['OpenTime',f"{coin}_USD_Open",f'{coin}_USD_High',f'{coin}_USD_Low',f"{coin}_USD_Close",f'{coin}_USD_volume','CloseTime']]
     if merge == True:
         all_coins_df = pd.merge(coin_df,all_coins_df,how='inner',on=['OpenTime','CloseTime'])
     else:
@@ -109,5 +109,5 @@ for i in range(3):
     strToday += today.split("-")[i]
     strYesterday += yesterday.split("-")[i]
 fileName = strYesterday + "_" + strToday
-all_coins_df.to_csv(f'C:/Users/DanhHoa/Documents/Final_Project_BigData/data/{fileName}', sep=",", index_label = "id")
+all_coins_df.to_csv(f'C:/Users/DanhHoa/Documents/Final_Project_BigData/data/2020_now.csv', sep=",", index_label = "id")
 
